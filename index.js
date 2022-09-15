@@ -1,25 +1,25 @@
 const root = document.getElementById("root");
 
-function Navbar() {
-  const linkHome = document.createElement("a");
-  linkHome.href = "/";
-  linkHome.textContent = "Home";
-  linkHome.onclick = function (event) {
+function Link(props) {
+  const a = document.createElement("a");
+  a.href = props.href;
+  a.textContent = props.label;
+  a.onclick = function (event) {
     event.preventDefault();
     history.pushState(null, "", event.target.href);
     root.innerHTML = "";
-    root.appendChild(HomePage());
+    root.appendChild(props.Component());
   };
+  return a;
+}
 
-  const linkAbout = document.createElement("a");
-  linkAbout.href = "/about";
-  linkAbout.textContent = "About";
-  linkAbout.onclick = function (event) {
-    event.preventDefault();
-    history.pushState(null, "", event.target.href);
-    root.innerHTML = "";
-    root.appendChild(AboutPage());
-  };
+function Navbar() {
+  const linkHome = Link({ href: "/", label: "Home", Component: HomePage });
+  const linkAbout = Link({
+    href: "/about",
+    label: "About",
+    Component: AboutPage,
+  });
 
   const div = document.createElement("div");
   div.append(linkHome);
@@ -52,15 +52,7 @@ function HomePage() {
 }
 
 function AboutPage() {
-  const linkHome = document.createElement("a");
-  linkHome.href = "/";
-  linkHome.textContent = "Home";
-  linkHome.onclick = function (event) {
-    event.preventDefault();
-    history.pushState(null, "", event.target.href);
-    root.innerHTML = "";
-    root.appendChild(HomePage());
-  };
+  const linkHome = Link({ href: "/", label: "Home", Component: HomePage });
 
   const p = document.createElement("p");
   p.textContent = "Welcome to About Page";
