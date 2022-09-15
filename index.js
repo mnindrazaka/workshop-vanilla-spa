@@ -1,11 +1,21 @@
+let state = {
+  path: window.location.pathname,
+  inputValue: "",
+};
+
+function setState(newState) {
+  state = { ...state, ...newState };
+  render();
+}
+
 function Link(props) {
   const a = document.createElement("a");
   a.href = props.href;
   a.textContent = props.label;
   a.onclick = function (event) {
     event.preventDefault();
-    history.pushState(null, "", event.target.href);
-    render();
+    const url = new URL(event.target.href);
+    setState({ path: url.pathname });
   };
   return a;
 }
@@ -28,11 +38,14 @@ function HomePage() {
   p.textContent = "Welcome to Home Page";
 
   const textPreview = document.createElement("p");
+  textPreview.textContent = state.inputValue;
 
   const input = document.createElement("input");
+  input.id = "input";
+  input.value = state.inputValue;
   input.placeholder = "enter your name";
   input.oninput = function (event) {
-    textPreview.textContent = event.target.value;
+    setState({ inputValue: event.target.value });
   };
 
   const div = document.createElement("div");
@@ -62,9 +75,9 @@ function App() {
 
   const div = document.createElement("div");
 
-  if (window.location.pathname == "/") {
+  if (state.path == "/") {
     div.appendChild(homePage);
-  } else if (window.location.pathname == "/about") {
+  } else if (state.path == "/about") {
     div.appendChild(aboutPage);
   }
 
@@ -72,10 +85,21 @@ function App() {
 }
 
 function render() {
+  const focusedElementId = document.activeElement.id;
+  const focusedElementSelectionStart = document.activeElement.selectionStart;
+  const focusedElementSelectionEnd = document.activeElement.selectionEnd;
+
   const root = document.getElementById("root");
   const app = App();
   root.innerHTML = "";
   root.appendChild(app);
+
+  if (focusedElementId) {
+    const focusedElement = document.getElementById(focusedElementId);
+    focusedElement.focus();
+    focusedElement.selectionStart = focusedElementSelectionStart;
+    focusedElement.selectionEnd = focusedElementSelectionEnd;
+  }
 }
 
 render();
