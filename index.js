@@ -1,22 +1,36 @@
-const linkHome = document.getElementById("link-home");
-const linkAbout = document.getElementById("link-about");
 const root = document.getElementById("root");
 
-linkHome.onclick = function (event) {
-  event.preventDefault();
-  history.pushState(null, "", event.target.href);
-  root.innerHTML = "";
-  root.appendChild(HomePage());
-};
+function Navbar() {
+  const linkHome = document.createElement("a");
+  linkHome.href = "/";
+  linkHome.textContent = "Home";
+  linkHome.onclick = function (event) {
+    event.preventDefault();
+    history.pushState(null, "", event.target.href);
+    root.innerHTML = "";
+    root.appendChild(HomePage());
+  };
 
-linkAbout.onclick = function (event) {
-  event.preventDefault();
-  history.pushState(null, "", event.target.href);
-  root.innerHTML = "";
-  root.appendChild(AboutPage());
-};
+  const linkAbout = document.createElement("a");
+  linkAbout.href = "/about";
+  linkAbout.textContent = "About";
+  linkAbout.onclick = function (event) {
+    event.preventDefault();
+    history.pushState(null, "", event.target.href);
+    root.innerHTML = "";
+    root.appendChild(AboutPage());
+  };
+
+  const div = document.createElement("div");
+  div.append(linkHome);
+  div.append(linkAbout);
+
+  return div;
+}
 
 function HomePage() {
+  const navbar = Navbar();
+
   const p = document.createElement("p");
   p.textContent = "Welcome to Home Page";
 
@@ -29,6 +43,7 @@ function HomePage() {
   };
 
   const div = document.createElement("div");
+  div.append(navbar);
   div.append(p);
   div.append(input);
   div.append(textPreview);
@@ -37,9 +52,23 @@ function HomePage() {
 }
 
 function AboutPage() {
+  const linkHome = document.createElement("a");
+  linkHome.href = "/";
+  linkHome.textContent = "Home";
+  linkHome.onclick = function (event) {
+    event.preventDefault();
+    history.pushState(null, "", event.target.href);
+    root.innerHTML = "";
+    root.appendChild(HomePage());
+  };
+
   const p = document.createElement("p");
   p.textContent = "Welcome to About Page";
-  return p;
+
+  const div = document.createElement("div");
+  div.appendChild(linkHome);
+  div.appendChild(p);
+  return div;
 }
 
 if (window.location.pathname == "/") {
