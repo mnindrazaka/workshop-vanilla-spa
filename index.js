@@ -1,11 +1,22 @@
 let state = {
   path: window.location.pathname,
-  inputValue: "",
+  inputValue: localStorage.getItem("inputValue"),
 };
 
 function setState(newState) {
-  state = { ...state, ...newState };
+  const prevState = { ...state };
+  const nextState = { ...state, ...newState };
+  state = nextState;
   render();
+  onStateChange(prevState, nextState);
+}
+
+function onStateChange(prevState, nextState) {
+  if (prevState.path !== nextState.path) {
+    history.pushState(null, "", nextState.path);
+  } else if (prevState.inputValue !== nextState.inputValue) {
+    localStorage.setItem("inputValue", nextState.inputValue);
+  }
 }
 
 function Link(props) {
