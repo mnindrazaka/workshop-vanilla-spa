@@ -42,10 +42,13 @@ function AboutPage() {
   return p;
 }
 
-if (window.location.pathname == "/") {
+if (window.location.pathname == "#home") {
   root.innerHTML = "";
   root.appendChild(HomePage());
-} else if (window.location.pathname == "/about") {
+} else if (window.location.pathname == "#about") {
   root.innerHTML = "";
   root.appendChild(AboutPage());
+} else {
+  root.innerHTML = "";
+  root.appendChild(HomePage());
 }
