@@ -14,9 +14,9 @@ function Link(props) {
 }
 
 function Navbar() {
-  const linkHome = Link({ href: "/", label: "Home", Component: HomePage });
+  const linkHome = Link({ href: "#home", label: "Home", Component: HomePage });
   const linkAbout = Link({
-    href: "/about",
+    href: "#about",
     label: "About",
     Component: AboutPage,
   });
@@ -52,7 +52,11 @@ function HomePage() {
 }
 
 function AboutPage() {
-  const linkHome = Link({ href: "/", label: "Home", Component: HomePage });
+  const linkHome = Link({
+    href: "#home",
+    label: "Back to Home",
+    Component: HomePage,
+  });
 
   const p = document.createElement("p");
   p.textContent = "Welcome to About Page";
@@ -63,10 +67,13 @@ function AboutPage() {
   return div;
 }
 
-if (window.location.pathname == "/") {
+if (window.location.pathname == "#home") {
   root.innerHTML = "";
   root.appendChild(HomePage());
-} else if (window.location.pathname == "/about") {
+} else if (window.location.pathname == "#about") {
   root.innerHTML = "";
   root.appendChild(AboutPage());
+} else {
+  root.innerHTML = "";
+  root.appendChild(HomePage());
 }
