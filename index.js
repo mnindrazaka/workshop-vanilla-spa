@@ -49,10 +49,17 @@ function HomePage() {
     setState({ inputValue: event.target.value });
   };
 
+  const buttonClear = document.createElement("button");
+  buttonClear.textContent = "Clear";
+  buttonClear.onclick = function () {
+    setState({ inputValue: "" });
+  };
+
   const div = document.createElement("div");
   div.append(navbar);
   div.append(p);
   div.append(input);
+  div.append(buttonClear);
   div.append(textPreview);
 
   return div;
