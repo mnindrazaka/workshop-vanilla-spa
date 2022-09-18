@@ -14,8 +14,10 @@ linkAbout.onclick = function (event) {
   root.textContent = "Welcome to About Page";
 };
 
-if (window.location.pathname == "/") {
+if (window.location.hash == "#home") {
   root.textContent = "Welcome to Home Page";
-} else if (window.location.pathname == "/about") {
+} else if (window.location.hash == "#about") {
   root.textContent = "Welcome to About Page";
+} else {
+  root.textContent = "Welcome to Home Page";
 }
