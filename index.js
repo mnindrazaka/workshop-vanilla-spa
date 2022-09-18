@@ -2,7 +2,7 @@ const root = document.getElementById("root");
 
 function Navbar() {
   const linkHome = document.createElement("a");
-  linkHome.href = "/";
+  linkHome.href = "#home";
   linkHome.textContent = "Home";
   linkHome.onclick = function (event) {
     event.preventDefault();
@@ -12,7 +12,7 @@ function Navbar() {
   };
 
   const linkAbout = document.createElement("a");
-  linkAbout.href = "/about";
+  linkAbout.href = "#about";
   linkAbout.textContent = "About";
   linkAbout.onclick = function (event) {
     event.preventDefault();
@@ -53,8 +53,8 @@ function HomePage() {
 
 function AboutPage() {
   const linkHome = document.createElement("a");
-  linkHome.href = "/";
-  linkHome.textContent = "Home";
+  linkHome.href = "#home";
+  linkHome.textContent = "Back to Home";
   linkHome.onclick = function (event) {
     event.preventDefault();
     history.pushState(null, "", event.target.href);
@@ -71,10 +71,13 @@ function AboutPage() {
   return div;
 }
 
-if (window.location.pathname == "/") {
+if (window.location.pathname == "#home") {
   root.innerHTML = "";
   root.appendChild(HomePage());
-} else if (window.location.pathname == "/about") {
+} else if (window.location.pathname == "#about") {
   root.innerHTML = "";
   root.appendChild(AboutPage());
+} else {
+  root.innerHTML = "";
+  root.appendChild(HomePage());
 }
