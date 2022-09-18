@@ -11,8 +11,8 @@ function Link(props) {
 }
 
 function Navbar() {
-  const linkHome = Link({ href: "/", label: "Home" });
-  const linkAbout = Link({ href: "/about", label: "About" });
+  const linkHome = Link({ href: "#home", label: "Home" });
+  const linkAbout = Link({ href: "#about", label: "About" });
 
   const div = document.createElement("div");
   div.append(linkHome);
@@ -45,7 +45,7 @@ function HomePage() {
 }
 
 function AboutPage() {
-  const linkHome = Link({ href: "/", label: "Home" });
+  const linkHome = Link({ href: "#home", label: "Back to Home" });
 
   const p = document.createElement("p");
   p.textContent = "Welcome to About Page";
@@ -60,15 +60,13 @@ function App() {
   const homePage = HomePage();
   const aboutPage = AboutPage();
 
-  const div = document.createElement("div");
-
-  if (window.location.pathname == "/") {
-    div.appendChild(homePage);
-  } else if (window.location.pathname == "/about") {
-    div.appendChild(aboutPage);
+  if (window.location.hash == "#home") {
+    return homePage;
+  } else if (window.location.hash == "#about") {
+    return aboutPage;
+  } else {
+    return homePage;
   }
-
-  return div;
 }
 
 function render() {
