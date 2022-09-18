@@ -1,5 +1,5 @@
 let state = {
-  path: window.location.pathname,
+  hash: window.location.hash,
   inputValue: "",
 };
 
@@ -15,14 +15,15 @@ function Link(props) {
   a.onclick = function (event) {
     event.preventDefault();
     const url = new URL(event.target.href);
-    setState({ path: url.pathname });
+    setState({ hash: url.hash });
+    history.pushState(null, "", url.hash);
   };
   return a;
 }
 
 function Navbar() {
-  const linkHome = Link({ href: "/", label: "Home" });
-  const linkAbout = Link({ href: "/about", label: "About" });
+  const linkHome = Link({ href: "#home", label: "Home" });
+  const linkAbout = Link({ href: "#about", label: "About" });
 
   const div = document.createElement("div");
   div.append(linkHome);
@@ -58,7 +59,7 @@ function HomePage() {
 }
 
 function AboutPage() {
-  const linkHome = Link({ href: "/", label: "Home" });
+  const linkHome = Link({ href: "#home", label: "Back to Home" });
 
   const p = document.createElement("p");
   p.textContent = "Welcome to About Page";
@@ -73,15 +74,13 @@ function App() {
   const homePage = HomePage();
   const aboutPage = AboutPage();
 
-  const div = document.createElement("div");
-
-  if (state.path == "/") {
-    div.appendChild(homePage);
-  } else if (state.path == "/about") {
-    div.appendChild(aboutPage);
+  if (state.hash == "#home") {
+    return homePage;
+  } else if (state.hash == "#about") {
+    return aboutPage;
+  } else {
+    return homePage;
   }
-
-  return div;
 }
 
 function render() {
