@@ -1,7 +1,11 @@
-# workshop-vanilla-spa
-Workshop Vanilla SPA
+# Workshop Vanilla SPA
 
-Steps : 
+Youtube Playlist :
+
+https://www.youtube.com/playlist?list=PLyBFBl5ASGL1-jIZ-m8HR3ZMLIUgLa_dk
+
+Branch by Steps :
+
 1. [Server Side Routing](https://github.com/mnindrazaka/workshop-vanilla-spa/tree/step-01-server-side-routing)
 2. [Client Side Routing](https://github.com/mnindrazaka/workshop-vanilla-spa/tree/step-02-client-side-routing)
 3. [Client Side Rendering](https://github.com/mnindrazaka/workshop-vanilla-spa/tree/step-03-client-side-rendering)
