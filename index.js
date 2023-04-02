@@ -120,3 +120,4 @@ function render() {
 }
 
 render();
+onStateChange({}, state);
