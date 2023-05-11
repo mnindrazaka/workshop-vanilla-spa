@@ -29,6 +29,16 @@ function Navbar(props) {
       </li>
       <li className="nav-item">
         <Link
+          href="#wishlist"
+          label="Wishlist"
+          isActive={props.hash === "#wishlist"}
+          onClick={function () {
+            props.onHashChange("#wishlist");
+          }}
+        />
+      </li>
+      <li className="nav-item">
+        <Link
           href="#about"
           label="About"
           isActive={props.hash === "#about"}
@@ -149,6 +159,48 @@ function HomePage(props) {
   );
 }
 
+function WishlistPage(props) {
+  return (
+    <Container>
+      <Navbar hash={props.hash} onHashChange={props.onHashChange} />
+      {props.wishlist.length > 0 ? (
+        <div className="card-columns">
+          {props.wishlist.map((product) => (
+            <div className="card">
+              <img className="card-img-top" src={product.thumbnail} />
+              <div className="card-body">
+                <h5 className="card-title">{product.title}</h5>
+                <p className="card-text">${product.price}</p>
+                {props.isProductInWishlist(product) ? (
+                  <button
+                    className="btn btn-danger"
+                    onClick={function () {
+                      props.onRemoveWishlist(product);
+                    }}
+                  >
+                    Remove from Wishlist
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={function () {
+                      props.onAddWishlist(product);
+                    }}
+                  >
+                    Add to Wishlist
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="alert alert-info">No wishlist found</p>
+      )}
+    </Container>
+  );
+}
+
 function AboutPage(props) {
   return (
     <Container>
@@ -201,6 +253,19 @@ function App() {
         isProductInWishlist={isProductInWishlist}
         onAddWishlist={addWishlist}
         onRemoveWishlist={removeWishlist}
+      />
+    );
+  } else if (hash == "#wishlist") {
+    return (
+      <WishlistPage
+        hash={hash}
+        onHashChange={function (newHash) {
+          setHash(newHash);
+        }}
+        isProductInWishlist={isProductInWishlist}
+        onAddWishlist={addWishlist}
+        onRemoveWishlist={removeWishlist}
+        wishlist={wishlist}
       />
     );
   } else if (hash == "#about") {
