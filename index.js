@@ -1,122 +1,116 @@
-let state = {
-  hash: window.location.hash,
-  inputValue: localStorage.getItem("inputValue"),
-};
-
-function setState(newState) {
-  const prevState = { ...state };
-  const nextState = { ...state, ...newState };
-  state = nextState;
-  render();
-  onStateChange(prevState, nextState);
-}
-
-function onStateChange(prevState, nextState) {
-  if (prevState.path !== nextState.path) {
-    history.pushState(null, "", nextState.path);
-  } else if (prevState.inputValue !== nextState.inputValue) {
-    localStorage.setItem("inputValue", nextState.inputValue);
-  }
-}
-
 function Link(props) {
-  const a = document.createElement("a");
-  a.href = props.href;
-  a.textContent = props.label;
-  a.onclick = function (event) {
+  const handleClick = function (event) {
     event.preventDefault();
-    const url = new URL(event.target.href);
-    setState({ hash: url.hash });
-    history.pushState(null, "", url.hash);
+    props.onClick();
   };
-  return a;
+  return (
+    <a href={props.href} onClick={handleClick}>
+      {props.label}
+    </a>
+  );
 }
 
-function Navbar() {
-  const linkHome = Link({ href: "#home", label: "Home" });
-  const linkAbout = Link({ href: "#about", label: "About" });
-
-  const div = document.createElement("div");
-  div.append(linkHome);
-  div.append(linkAbout);
-
-  return div;
+function Navbar(props) {
+  return (
+    <div>
+      <Link
+        href="#home"
+        label="Home"
+        onClick={function () {
+          props.onHashChange("#home");
+        }}
+      />
+      <Link
+        href="#about"
+        label="About"
+        onClick={function () {
+          props.onHashChange("#about");
+        }}
+      />
+    </div>
+  );
 }
 
-function HomePage() {
-  const navbar = Navbar();
+function HomePage(props) {
+  const [inputValue, setInputValue] = React.useState(
+    localStorage.getItem("inputValue")
+  );
 
-  const p = document.createElement("p");
-  p.textContent = "Welcome to Home Page";
+  React.useEffect(() => {
+    localStorage.setItem("inputValue", inputValue);
+  }, [inputValue]);
 
-  const textPreview = document.createElement("p");
-  textPreview.textContent = state.inputValue;
-
-  const input = document.createElement("input");
-  input.id = "input";
-  input.value = state.inputValue;
-  input.placeholder = "enter your name";
-  input.oninput = function (event) {
-    setState({ inputValue: event.target.value });
-  };
-
-  const buttonClear = document.createElement("button");
-  buttonClear.textContent = "Clear";
-  buttonClear.onclick = function () {
-    setState({ inputValue: "" });
-  };
-
-  const div = document.createElement("div");
-  div.append(navbar);
-  div.append(p);
-  div.append(input);
-  div.append(buttonClear);
-  div.append(textPreview);
-
-  return div;
+  return (
+    <div>
+      <Navbar onHashChange={props.onHashChange} />
+      <p>Welcome to Home Page</p>
+      <input
+        value={inputValue}
+        placeholder="enter your name"
+        onChange={function (event) {
+          setInputValue(event.target.value);
+        }}
+      />
+      <button
+        onClick={function () {
+          setInputValue(event.target.value);
+        }}
+      >
+        Clear
+      </button>
+      <p>{inputValue}</p>
+    </div>
+  );
 }
 
-function AboutPage() {
-  const linkHome = Link({ href: "#home", label: "Back to Home" });
-
-  const p = document.createElement("p");
-  p.textContent = "Welcome to About Page";
-
-  const div = document.createElement("div");
-  div.appendChild(linkHome);
-  div.appendChild(p);
-  return div;
+function AboutPage(props) {
+  return (
+    <div>
+      <Link
+        href="#home"
+        label="Back to Home"
+        onClick={function () {
+          props.onHashChange("#home");
+        }}
+      />
+      <p>Welcome to About Page</p>
+    </div>
+  );
 }
 
 function App() {
-  const homePage = HomePage();
-  const aboutPage = AboutPage();
+  const [hash, setHash] = React.useState(window.location.hash);
 
-  if (state.hash == "#home") {
-    return homePage;
-  } else if (state.hash == "#about") {
-    return aboutPage;
+  React.useEffect(() => {
+    history.pushState(null, "", hash);
+  }, [hash]);
+
+  if (hash == "#home") {
+    return (
+      <HomePage
+        onHashChange={function (newHash) {
+          setHash(newHash);
+        }}
+      />
+    );
+  } else if (hash == "#about") {
+    return (
+      <AboutPage
+        onHashChange={function (newHash) {
+          setHash(newHash);
+        }}
+      />
+    );
   } else {
-    return homePage;
+    return (
+      <HomePage
+        onHashChange={function (newHash) {
+          setHash(newHash);
+        }}
+      />
+    );
   }
 }
 
-function render() {
-  const focusedElementId = document.activeElement.id;
-  const focusedElementSelectionStart = document.activeElement.selectionStart;
-  const focusedElementSelectionEnd = document.activeElement.selectionEnd;
-
-  const root = document.getElementById("root");
-  const app = App();
-  root.innerHTML = "";
-  root.appendChild(app);
-
-  if (focusedElementId) {
-    const focusedElement = document.getElementById(focusedElementId);
-    focusedElement.focus();
-    focusedElement.selectionStart = focusedElementSelectionStart;
-    focusedElement.selectionEnd = focusedElementSelectionEnd;
-  }
-}
-
-render();
+const root = document.getElementById("root");
+ReactDOM.render(<App />, root);
