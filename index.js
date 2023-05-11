@@ -4,7 +4,11 @@ function Link(props) {
     props.onClick();
   };
   return (
-    <a href={props.href} onClick={handleClick}>
+    <a
+      className={"nav-link " + (props.isActive ? "active" : "")}
+      href={props.href}
+      onClick={handleClick}
+    >
       {props.label}
     </a>
   );
@@ -12,21 +16,35 @@ function Link(props) {
 
 function Navbar(props) {
   return (
-    <div>
-      <Link
-        href="#home"
-        label="Home"
-        onClick={function () {
-          props.onHashChange("#home");
-        }}
-      />
-      <Link
-        href="#about"
-        label="About"
-        onClick={function () {
-          props.onHashChange("#about");
-        }}
-      />
+    <ul className="nav nav-pills pt-2 pb-2">
+      <li className="nav-item">
+        <Link
+          href="#home"
+          label="Home"
+          isActive={props.hash === "#home"}
+          onClick={function () {
+            props.onHashChange("#home");
+          }}
+        />
+      </li>
+      <li className="nav-item">
+        <Link
+          href="#about"
+          label="About"
+          isActive={props.hash === "#about"}
+          onClick={function () {
+            props.onHashChange("#about");
+          }}
+        />
+      </li>
+    </ul>
+  );
+}
+
+function Container(props) {
+  return (
+    <div className="d-flex flex-column align-items-center">
+      {props.children}
     </div>
   );
 }
@@ -61,56 +79,63 @@ function HomePage(props) {
   }, [inputValue]);
 
   return (
-    <div>
-      <Navbar onHashChange={props.onHashChange} />
-      <p>Welcome to Home Page</p>
-      <input
-        value={inputValue}
-        placeholder="enter your name"
-        onChange={function (event) {
-          setInputValue(event.target.value);
-        }}
-      />
-      <button
-        onClick={function () {
-          setInputValue(event.target.value);
-        }}
-      >
-        Clear
-      </button>
-      <p>Search result for "{inputValue}"</p>
+    <Container>
+      <Navbar hash={props.hash} onHashChange={props.onHashChange} />
+      <h4 className="mt-2">Search the products</h4>
+      <div className="input-group" style={{ maxWidth: 480 }}>
+        <input
+          className="form-control"
+          value={inputValue}
+          placeholder="enter your name"
+          onChange={function (event) {
+            setInputValue(event.target.value);
+          }}
+        />
+        <div className="input-group-append">
+          <button
+            className="btn btn-danger"
+            onClick={function () {
+              setInputValue(event.target.value);
+            }}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <p className="mt-2">Showing search result for "{inputValue}"</p>
 
       {isLoading ? (
-        <p>Loading...</p>
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
       ) : error !== "" ? (
-        <p>{error}</p>
+        <p className="alert alert-danger">{error}</p>
       ) : products.length > 0 ? (
-        products.map((product) => (
-          <div>
-            <img src={product.thumbnail} width={100} />
-            <h5>{product.title}</h5>
-            <p>${product.price}</p>
-          </div>
-        ))
+        <div className="card-columns">
+          {products.map((product) => (
+            <div className="card">
+              <img className="card-img-top" src={product.thumbnail} />
+              <div className="card-body">
+                <h5 className="card-title">{product.title}</h5>
+                <p className="card-text">${product.price}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
-        <p>No result found</p>
+        <p className="alert alert-info">No result found</p>
       )}
-    </div>
+    </Container>
   );
 }
 
 function AboutPage(props) {
   return (
-    <div>
-      <Link
-        href="#home"
-        label="Back to Home"
-        onClick={function () {
-          props.onHashChange("#home");
-        }}
-      />
-      <p>Welcome to About Page</p>
-    </div>
+    <Container>
+      <Navbar hash={props.hash} onHashChange={props.onHashChange} />
+      <h4 className="mt-2">Welcome to About Page</h4>
+    </Container>
   );
 }
 
@@ -124,6 +149,7 @@ function App() {
   if (hash == "#home") {
     return (
       <HomePage
+        hash={hash}
         onHashChange={function (newHash) {
           setHash(newHash);
         }}
@@ -132,6 +158,7 @@ function App() {
   } else if (hash == "#about") {
     return (
       <AboutPage
+        hash={hash}
         onHashChange={function (newHash) {
           setHash(newHash);
         }}
