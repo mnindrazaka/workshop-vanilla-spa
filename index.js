@@ -40,6 +40,26 @@ function HomePage(props) {
     localStorage.setItem("inputValue", inputValue);
   }, [inputValue]);
 
+  const [products, setProducts] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    fetch("https://dummyjson.com/products/search?q=" + inputValue)
+      .then((res) => res.json())
+      .then((data) => {
+        setIsLoading(false);
+        setProducts(data.products);
+        setError("");
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        setProducts([]);
+        setError(err.message);
+      });
+  }, [inputValue]);
+
   return (
     <div>
       <Navbar onHashChange={props.onHashChange} />
@@ -58,7 +78,23 @@ function HomePage(props) {
       >
         Clear
       </button>
-      <p>{inputValue}</p>
+      <p>Search result for "{inputValue}"</p>
+
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error !== "" ? (
+        <p>{error}</p>
+      ) : products.length > 0 ? (
+        products.map((product) => (
+          <div>
+            <img src={product.thumbnail} width={100} />
+            <h5>{product.title}</h5>
+            <p>${product.price}</p>
+          </div>
+        ))
+      ) : (
+        <p>No result found</p>
+      )}
     </div>
   );
 }
