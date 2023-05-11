@@ -119,6 +119,25 @@ function HomePage(props) {
               <div className="card-body">
                 <h5 className="card-title">{product.title}</h5>
                 <p className="card-text">${product.price}</p>
+                {props.isProductInWishlist(product) ? (
+                  <button
+                    className="btn btn-danger"
+                    onClick={function () {
+                      props.onRemoveWishlist(product);
+                    }}
+                  >
+                    Remove from Wishlist
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={function () {
+                      props.onAddWishlist(product);
+                    }}
+                  >
+                    Add to Wishlist
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -146,6 +165,32 @@ function App() {
     history.pushState(null, "", hash);
   }, [hash]);
 
+  const [wishlist, setWishlist] = React.useState(
+    JSON.parse(localStorage.getItem("wishlist") || "[]")
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  function addWishlist(product) {
+    setWishlist([...wishlist, product]);
+  }
+
+  function removeWishlist(targetProduct) {
+    setWishlist(
+      wishlist.filter(function (product) {
+        return targetProduct.id !== product.id;
+      })
+    );
+  }
+
+  function isProductInWishlist(targetProduct) {
+    return wishlist.some(function (product) {
+      return targetProduct.id === product.id;
+    });
+  }
+
   if (hash == "#home") {
     return (
       <HomePage
@@ -153,6 +198,9 @@ function App() {
         onHashChange={function (newHash) {
           setHash(newHash);
         }}
+        isProductInWishlist={isProductInWishlist}
+        onAddWishlist={addWishlist}
+        onRemoveWishlist={removeWishlist}
       />
     );
   } else if (hash == "#about") {
@@ -170,6 +218,9 @@ function App() {
         onHashChange={function (newHash) {
           setHash(newHash);
         }}
+        isProductInWishlist={isProductInWishlist}
+        onAddWishlist={addWishlist}
+        onRemoveWishlist={removeWishlist}
       />
     );
   }
