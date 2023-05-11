@@ -74,18 +74,22 @@ function HomePage(props) {
 
   React.useEffect(() => {
     setIsLoading(true);
-    fetch("https://dummyjson.com/products/search?q=" + inputValue)
-      .then((res) => res.json())
-      .then((data) => {
-        setIsLoading(false);
-        setProducts(data.products);
-        setError("");
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        setProducts([]);
-        setError(err.message);
-      });
+    const timeout = setTimeout(() => {
+      fetch("https://dummyjson.com/products/search?q=" + inputValue)
+        .then((res) => res.json())
+        .then((data) => {
+          setIsLoading(false);
+          setProducts(data.products);
+          setError("");
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          setProducts([]);
+          setError(err.message);
+        });
+    }, 600);
+
+    return () => clearTimeout(timeout);
   }, [inputValue]);
 
   return (
